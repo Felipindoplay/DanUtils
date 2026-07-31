@@ -16,30 +16,33 @@ Você pode rodar o **DanUtils** diretamente pelo PowerShell sem precisar baixar 
 Abra o **PowerShell como Administrador** e execute:
 
 ```powershell
-irm [https://raw.githubusercontent.com/Felipindoplay/DanUtils/main/DanUtils.ps1](https://raw.githubusercontent.com/Felipindoplay/DanUtils/main/DanUtils.ps1) | iex
-(Ou simplesmente execute o arquivo wrapper local Ferramenta-On.ps1 disponibilizado neste repositório).
+irm https://raw.githubusercontent.com/Felipindoplay/DanUtils/main/DanUtils.ps1 | iex
+```
 
-🛠️ Recursos Principais
-1. Suporte a WinUtil (Chris Titus Suite)
-Lançamento Otimizado: Executa a ferramenta sem janelas pretas de terminal abertas em segundo plano.
+*(Ou simplesmente execute o arquivo wrapper local `Ferramenta-On.ps1` disponibilizado neste repositório)*.
 
-Automação via .json: Detecção automática de um arquivo de perfil (.json) na raiz do programa ou escolha manual através do Explorador de Arquivos para aplicação de perfis silenciosos.
+---
 
-2. Suporte a MAS AIO (Microsoft Activation Scripts)
-Ativação Permanente: Windows 10/11 por HWID (Licença Digital) e Microsoft Office por Ohook.
+## 🛠️ Recursos Principais
 
-Opções Avançadas: Ativações KMS38 (até 2038), Online KMS (Renovação 180 dias) e troca fácil de Edição do Windows.
+### 1. Suporte a WinUtil (`Chris Titus Suite`)
+* **Lançamento Otimizado:** Executa a ferramenta sem janelas pretas de terminal abertas em segundo plano.
+* **Automação via `.json`:** Detecção automática de um arquivo de perfil (`.json`) na raiz do programa ou escolha manual através do Explorador de Arquivos para aplicação de perfis silenciosos.
 
-Diagnósticos: Verificação em tempo real do status de ativação (slmgr) e botões de reparo de serviços corrompidos (sppsvc).
+### 2. Suporte a MAS AIO (`Microsoft Activation Scripts`)
+* **Ativação Permanente:** Windows 10/11 por **HWID** (Licença Digital) e Microsoft Office por **Ohook**.
+* **Opções Avançadas:** Ativações KMS38 (até 2038), Online KMS (Renovação 180 dias) e troca fácil de Edição do Windows.
+* **Diagnósticos:** Verificação em tempo real do status de ativação (`slmgr`) e botões de reparo de serviços corrompidos (`sppsvc`).
 
-🎨 Paleta de Cores: Catppuccin Mocha
-A interface foi programada sob medida utilizando os tons oficiais da paleta Mocha:
+---
 
-Fundo: #1e1e2e (Base) & #181825 (Mantle)
+## 🎨 Paleta de Cores: Catppuccin Mocha
+A interface foi programada sob medida utilizando os tons oficiais da paleta **Mocha**:
+* **Fundo:** `#1e1e2e` (Base) & `#181825` (Mantle)
+* **Cartões:** `#313244` (Surface0)
+* **Destaques:** `#cba6f7` (Mauve - Roxo Principal), `#f5c2e7` (Pink), `#89b4fa` (Blue) & `#a6e3a1` (Green).
 
-Cartões: #313244 (Surface0)
+---
 
-Destaques: #cba6f7 (Mauve - Roxo Principal), #f5c2e7 (Pink), #89b4fa (Blue) & #a6e3a1 (Green).
-
-🚀 Integração com autounattend.xml
-O DanUtils pode ser incorporado na instalação do Windows para abrir automaticamente na sua primeira inicialização da Área de Trabalho. Consulte o arquivo guia.txt para instruções de configuração no Unattend Generator (Schneegans).
+## 🚀 Integração com `autounattend.xml`
+O DanUtils pode ser incorporado na instalação do Windows para abrir automaticamente na sua primeira inicialização da Área de Trabalho. Consulte o arquivo [guia.txt](guia.txt) para instruções de configuração no **Unattend Generator (Schneegans)**.
