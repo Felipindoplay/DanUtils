@@ -1,0 +1,37 @@
+==============================================================================
+ GUIA DE INTEGRAÇÃO DO DANUTILS NO AUTOUNATTEND.XML (schneegans.de)
+==============================================================================
+
+Este guia ensina como configurar o gerador de resposta autônoma do Windows
+(https://schneegans.de/windows/unattend-generator/) para executar o seu script
+"DanUtils" automaticamente logo após a formatação.
+
+------------------------------------------------------------------------------
+OPÇÃO 1 - EXECUTAR DIRETO DO SEU GITHUB VIA INTERNET (RECOMENDADO)
+------------------------------------------------------------------------------
+Este é o método mais limpo e sempre puxa a versão atualizada no seu GitHub.
+
+1. Acesse o site: https://schneegans.de/windows/unattend-generator/
+2. Vá até a seção chamada: "Run custom scripts" -> "FirstLogonCommands".
+3. Clique em "Add command" (Adicionar comando).
+4. No campo "Command line", cole exatamente o comando abaixo:
+
+   powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/Felipindoplay/DanUtils/main/DanUtils.ps1 | iex"
+
+5. No campo "Context", certifique-se de deixar marcado como:
+   [x] Administrator (Run as user with elevated privileges).
+6. Baixe o "autounattend.xml" gerado e coloque-o na raiz do seu pendrive bootável.
+
+------------------------------------------------------------------------------
+OPÇÃO 2 - USAR ARQUIVO OFFLINE COLOCADO NO PENDRIVE
+------------------------------------------------------------------------------
+Caso o computador não tenha internet no momento em que entra na Área de Trabalho:
+
+1. Salve o arquivo "DanUtils.ps1" na raiz do seu pendrive bootável do Windows.
+2. Em "Run custom scripts" -> "FirstLogonCommands", clique em "Add command".
+3. Cole o comando abaixo para copiar do pendrive para o Desktop e rodar:
+
+   powershell -NoProfile -ExecutionPolicy Bypass -Command "$usb = (Get-Volume | Where-Object { Test-Path ($_.DriveLetter + ':\DanUtils.ps1') }).DriveLetter; if ($usb) { Copy-Item ($usb + ':\DanUtils.ps1') -Destination $env:USERPROFILE\Desktop\DanUtils.ps1; Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"' + $env:USERPROFILE + '\Desktop\DanUtils.ps1\"' }"
+
+4. GERE o XML e coloque na raiz do pendrive.
+==============================================================================
