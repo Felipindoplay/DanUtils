@@ -24,6 +24,14 @@ if ($consolePtr -ne [IntPtr]::Zero) {
     [Console.Window]::ShowWindow($consolePtr, 0) # 0 = SW_HIDE
 }
 
+# --- AJUSTE DE REGISTRO PARA O WEBBROWSER USAR MODO MAIS RECENTE ---
+try {
+    $regPath = "HKCU:\Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION"
+    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+    $processName = [System.IO.Path]::GetFileName([System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName)
+    Set-ItemProperty -Path $regPath -Name $processName -Value 11000 -Type DWord -Force | Out-Null
+} catch {}
+
 # ==============================================================================
 # CARREGAMENTO DE ASSETS DO WPF
 # ==============================================================================
@@ -43,9 +51,9 @@ $SelectedJsonPath = if ($DefaultJson) { $DefaultJson.FullName } else { "Nenhum a
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="DanUtils - Central de Ferramentas &amp; Ativação" Height="680" Width="960"
+        Title="DanUtils - Central de Ferramentas &amp; Ativação" Height="740" Width="1200"
         WindowStartupLocation="CenterScreen" Background="#1e1e2e"
-        FontFamily="Segoe UI" ResizeMode="CanMinimize">
+        FontFamily="Segoe UI" ResizeMode="CanResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -73,54 +81,72 @@ $SelectedJsonPath = if ($DefaultJson) { $DefaultJson.FullName } else { "Nenhum a
             </Grid.RowDefinitions>
 
             <!-- CABEÇALHO DA HOME -->
-            <StackPanel Grid.Row="0" Margin="0,15,0,25">
+            <StackPanel Grid.Row="0" Margin="0,10,0,20">
                 <TextBlock Text="Selecione uma ferramenta abaixo" Foreground="#cdd6f4" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="Acesse rapidamente os utilitários para otimização ou licenciamento do sistema" Foreground="#a6adc8" FontSize="14" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                <TextBlock Text="Acesse rapidamente os utilitários para otimização, licenciamento ou deploy do sistema" Foreground="#a6adc8" FontSize="14" HorizontalAlignment="Center" Margin="0,6,0,0"/>
             </StackPanel>
 
             <!-- CARDS DE ESCOLHA -->
-            <Grid Grid.Row="1" VerticalAlignment="Center" Margin="20,0">
+            <Grid Grid.Row="1" VerticalAlignment="Center" Margin="10,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="15"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- CARD 1: WINUTIL -->
-                <Border Grid.Column="0" Background="#313244" BorderBrush="#45475a" BorderThickness="1" CornerRadius="10" Padding="25">
+                <Border Grid.Column="0" Background="#313244" BorderBrush="#45475a" BorderThickness="1" CornerRadius="10" Padding="18">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,10">
-                            <TextBlock Text="🛠️ WinUtil" Foreground="#cdd6f4" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,6"/>
-                            <TextBlock Text="Chris Titus Tech Suite" Foreground="#cba6f7" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                            <TextBlock Text="Tweaks de sistema, instalação de programas (WinGet), otimização do Windows, atualizações e personalização avançada." Foreground="#a6adc8" FontSize="13" TextWrapping="Wrap" TextAlignment="Center" LineHeight="20"/>
+                        <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,5">
+                            <TextBlock Text="🛠️ WinUtil" Foreground="#cdd6f4" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,6"/>
+                            <TextBlock Text="Chris Titus Tech Suite" Foreground="#cba6f7" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,14"/>
+                            <TextBlock Text="Tweaks de sistema, instalação de programas (WinGet), otimização do Windows, atualizações e personalização avançada." Foreground="#a6adc8" FontSize="12" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18"/>
                         </StackPanel>
-                        <Button Name="BtnOpenWinUtilCard" Grid.Row="1" Content="ABRIR WINUTIL" Height="44" Background="#cba6f7" Foreground="#11111b" BorderThickness="0" FontWeight="Bold" FontSize="13" Cursor="Hand" Margin="0,20,0,0"/>
+                        <Button Name="BtnOpenWinUtilCard" Grid.Row="1" Content="ABRIR WINUTIL" Height="40" Background="#cba6f7" Foreground="#11111b" BorderThickness="0" FontWeight="Bold" FontSize="12" Cursor="Hand" Margin="0,15,0,0"/>
                     </Grid>
                 </Border>
 
                 <!-- CARD 2: MAS AIO -->
-                <Border Grid.Column="2" Background="#313244" BorderBrush="#45475a" BorderThickness="1" CornerRadius="10" Padding="25">
+                <Border Grid.Column="2" Background="#313244" BorderBrush="#45475a" BorderThickness="1" CornerRadius="10" Padding="18">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,10">
-                            <TextBlock Text="⚡ MAS AIO" Foreground="#cdd6f4" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,6"/>
-                            <TextBlock Text="Microsoft Activation Suite" Foreground="#f5c2e7" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                            <TextBlock Text="Ativação permanente para Windows (HWID) e Office (Ohook), conversão de edição e ferramentas de correção." Foreground="#a6adc8" FontSize="13" TextWrapping="Wrap" TextAlignment="Center" LineHeight="20"/>
+                        <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,5">
+                            <TextBlock Text="⚡ MAS AIO" Foreground="#cdd6f4" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,6"/>
+                            <TextBlock Text="Microsoft Activation Suite" Foreground="#f5c2e7" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,14"/>
+                            <TextBlock Text="Ativação permanente para Windows (HWID) e Office (Ohook), conversão de edição e ferramentas de correção." Foreground="#a6adc8" FontSize="12" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18"/>
                         </StackPanel>
-                        <Button Name="BtnOpenMASCard" Grid.Row="1" Content="ABRIR MAS AIO" Height="44" Background="#f5c2e7" Foreground="#11111b" BorderThickness="0" FontWeight="Bold" FontSize="13" Cursor="Hand" Margin="0,20,0,0"/>
+                        <Button Name="BtnOpenMASCard" Grid.Row="1" Content="ABRIR MAS AIO" Height="40" Background="#f5c2e7" Foreground="#11111b" BorderThickness="0" FontWeight="Bold" FontSize="12" Cursor="Hand" Margin="0,15,0,0"/>
+                    </Grid>
+                </Border>
+
+                <!-- CARD 3: AUTOUNATTEND -->
+                <Border Grid.Column="4" Background="#313244" BorderBrush="#cba6f7" BorderThickness="1" CornerRadius="10" Padding="18">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,5">
+                            <TextBlock Text="⚙️ AutoUnattend" Foreground="#cdd6f4" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,6"/>
+                            <TextBlock Text="Schneegans Generator" Foreground="#cba6f7" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,14"/>
+                            <TextBlock Text="Carrega o gerador de arquivos Unattend autônomos dentro do utilitário para testes de personalização e deploy." Foreground="#a6adc8" FontSize="12" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18"/>
+                        </StackPanel>
+                        <Button Name="BtnOpenUnattendCard" Grid.Row="1" Content="ABRIR GERADOR AUTOUNATTEND" Height="40" Background="#cba6f7" Foreground="#11111b" BorderThickness="0" FontWeight="Bold" FontSize="12" Cursor="Hand" Margin="0,15,0,0"/>
                     </Grid>
                 </Border>
             </Grid>
 
             <!-- RODAPÉ DA HOME -->
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
                 <Button Name="BtnExit" Content="Sair do DanUtils" Width="130" Height="36" Background="#45475a" Foreground="#cdd6f4" BorderThickness="0" FontWeight="SemiBold" Cursor="Hand"/>
             </StackPanel>
         </Grid>
@@ -381,6 +407,49 @@ $SelectedJsonPath = if ($DefaultJson) { $DefaultJson.FullName } else { "Nenhum a
 
             </Grid>
         </Grid>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 4: AUTOUNATTEND EMBUTIDO NA ABA -->
+        <!-- ============================================================== -->
+        <Grid Name="ViewUnattend" Grid.Row="1" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="210"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- SIDEBAR DO GERADOR -->
+            <Border Background="#181825" Grid.Column="0" BorderBrush="#313244" BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="15,25,15,20">
+                        <TextBlock Text="⚙️ UNATTEND" Foreground="#cba6f7" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Schneegans Generator" Foreground="#a6adc8" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Margin="10,0,10,0">
+                        <Button Name="TabWebGenerator" Content="🌐 Gerador Online" Height="42" Background="#313244" Foreground="#cdd6f4" BorderThickness="0" Margin="0,0,0,8" FontSize="13" FontWeight="SemiBold" HorizontalContentAlignment="Left" Padding="15,0,0,0" Cursor="Hand"/>
+                        <Button Name="BtnRefreshBrowser" Content="🔄 Recarregar Página" Height="42" Background="#181825" Foreground="#a6adc8" BorderThickness="0" Margin="0,0,0,8" FontSize="13" FontWeight="SemiBold" HorizontalContentAlignment="Left" Padding="15,0,0,0" Cursor="Hand"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Margin="10,10,10,20">
+                        <Button Name="BtnOpenInExternal" Content="↗️ Abrir no Navegador" Height="40" Background="#f5c2e7" Foreground="#11111b" BorderThickness="0" Margin="0,0,0,8" FontSize="13" FontWeight="Bold" Cursor="Hand"/>
+                        <Button Name="BtnVoltarHomeUnattend" Content="⬅️ Voltar ao Início" Height="38" Background="#45475a" Foreground="#cdd6f4" BorderThickness="0" FontSize="13" FontWeight="SemiBold" Cursor="Hand"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- PAINEL PRINCIPAL COM O WEBBROWSER -->
+            <Grid Grid.Column="1" Margin="10">
+                <Border BorderBrush="#313244" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
+                    <WebBrowser Name="WebIframe" />
+                </Border>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>
 "@
@@ -392,37 +461,112 @@ $reader = (New-Object System.Xml.XmlNodeReader $xaml)
 $Form = [Windows.Markup.XamlReader]::Load($reader)
 
 # --- CONTROLES DE NAVEGAÇÃO ---
-$ViewHome             = $Form.FindName("ViewHome")
-$ViewWinUtil          = $Form.FindName("ViewWinUtil")
-$ViewMAS              = $Form.FindName("ViewMAS")
+$ViewHome              = $Form.FindName("ViewHome")
+$ViewWinUtil           = $Form.FindName("ViewWinUtil")
+$ViewMAS               = $Form.FindName("ViewMAS")
+$ViewUnattend          = $Form.FindName("ViewUnattend")
 
-$BtnOpenWinUtilCard   = $Form.FindName("BtnOpenWinUtilCard")
-$BtnOpenMASCard       = $Form.FindName("BtnOpenMASCard")
-$BtnExit              = $Form.FindName("BtnExit")
-$BtnVoltarHomeWinUtil = $Form.FindName("BtnVoltarHomeWinUtil")
-$BtnVoltarHomeMAS     = $Form.FindName("BtnVoltarHomeMAS")
+$BtnOpenWinUtilCard    = $Form.FindName("BtnOpenWinUtilCard")
+$BtnOpenMASCard        = $Form.FindName("BtnOpenMASCard")
+$BtnOpenUnattendCard   = $Form.FindName("BtnOpenUnattendCard")
+$BtnExit               = $Form.FindName("BtnExit")
+$BtnVoltarHomeWinUtil  = $Form.FindName("BtnVoltarHomeWinUtil")
+$BtnVoltarHomeMAS      = $Form.FindName("BtnVoltarHomeMAS")
+$BtnVoltarHomeUnattend = $Form.FindName("BtnVoltarHomeUnattend")
+
+# --- CONTROLES DA ABA AUTOUNATTEND ---
+$BtnRefreshBrowser     = $Form.FindName("BtnRefreshBrowser")
+$BtnOpenInExternal     = $Form.FindName("BtnOpenInExternal")
+$WebIframe             = $Form.FindName("WebIframe")
+$TargetUrl             = "https://schneegans.de/windows/unattend-generator/"
+$global:PageLoaded     = $false
+
+function Disable-WebBrowserScriptErrors ($browser) {
+    try {
+        $fiComWebBrowser = $browser.GetType().GetField("_axIWebBrowser2", [System.Reflection.BindingFlags]"Instance,NonPublic")
+        if ($null -ne $fiComWebBrowser) {
+            $objComWebBrowser = $fiComWebBrowser.GetValue($browser)
+            if ($null -ne $objComWebBrowser) {
+                $objComWebBrowser.GetType().InvokeMember("Silent", [System.Reflection.BindingFlags]"SetProperty", $null, $objComWebBrowser, @($true))
+            }
+        }
+    } catch {}
+}
+
+function Inject-HideScrollbarCss ($browser) {
+    try {
+        $doc = $browser.Document
+        if ($null -ne $doc) {
+            $head = $doc.getElementsByTagName("head").item(0)
+            $style = $doc.createElement("style")
+            $style.type = "text/css"
+            $cssRules = @"
+                ::-webkit-scrollbar { display: none !important; }
+                html, body {
+                    -ms-overflow-style: none !important;
+                    scrollbar-width: none !important;
+                    overflow: auto !important;
+                }
+"@
+            $style.styleSheet.cssText = $cssRules
+            $head.appendChild($style) | Out-Null
+        }
+    } catch {}
+}
+
+$WebIframe.Add_Navigating({ Disable-WebBrowserScriptErrors -browser $WebIframe })
+$WebIframe.Add_Navigated({
+    Disable-WebBrowserScriptErrors -browser $WebIframe
+    Inject-HideScrollbarCss -browser $WebIframe
+})
 
 function Show-View ($ViewToShow) {
     if ($ViewToShow -eq "Home") {
-        $ViewHome.Visibility    = "Visible"
-        $ViewWinUtil.Visibility = "Collapsed"
-        $ViewMAS.Visibility     = "Collapsed"
+        $ViewHome.Visibility     = "Visible"
+        $ViewWinUtil.Visibility  = "Collapsed"
+        $ViewMAS.Visibility      = "Collapsed"
+        $ViewUnattend.Visibility = "Collapsed"
     } elseif ($ViewToShow -eq "WinUtil") {
-        $ViewHome.Visibility    = "Collapsed"
-        $ViewWinUtil.Visibility = "Visible"
-        $ViewMAS.Visibility     = "Collapsed"
+        $ViewHome.Visibility     = "Collapsed"
+        $ViewWinUtil.Visibility  = "Visible"
+        $ViewMAS.Visibility      = "Collapsed"
+        $ViewUnattend.Visibility = "Collapsed"
     } elseif ($ViewToShow -eq "MAS") {
-        $ViewHome.Visibility    = "Collapsed"
-        $ViewWinUtil.Visibility = "Collapsed"
-        $ViewMAS.Visibility     = "Visible"
+        $ViewHome.Visibility     = "Collapsed"
+        $ViewWinUtil.Visibility  = "Collapsed"
+        $ViewMAS.Visibility      = "Visible"
+        $ViewUnattend.Visibility = "Collapsed"
+    } elseif ($ViewToShow -eq "Unattend") {
+        $ViewHome.Visibility     = "Collapsed"
+        $ViewWinUtil.Visibility  = "Collapsed"
+        $ViewMAS.Visibility      = "Collapsed"
+        $ViewUnattend.Visibility = "Visible"
+
+        if (-not $global:PageLoaded) {
+            try {
+                $WebIframe.Navigate($TargetUrl)
+                Disable-WebBrowserScriptErrors -browser $WebIframe
+                $global:PageLoaded = $true
+            } catch {
+                Write-Host "Erro ao navegar para $TargetUrl" -ForegroundColor Red
+            }
+        }
     }
 }
 
 $BtnOpenWinUtilCard.Add_Click({ Show-View "WinUtil" })
 $BtnOpenMASCard.Add_Click({ Show-View "MAS" })
+$BtnOpenUnattendCard.Add_Click({ Show-View "Unattend" })
 $BtnVoltarHomeWinUtil.Add_Click({ Show-View "Home" })
 $BtnVoltarHomeMAS.Add_Click({ Show-View "Home" })
+$BtnVoltarHomeUnattend.Add_Click({ Show-View "Home" })
 $BtnExit.Add_Click({ $Form.Close() })
+
+$BtnRefreshBrowser.Add_Click({
+    try { $WebIframe.Refresh() } catch { $WebIframe.Navigate($TargetUrl) }
+})
+
+$BtnOpenInExternal.Add_Click({ Start-Process $TargetUrl })
 
 # --- WINUTIL - AÇÕES (NORMAL & COM ARQUIVO JSON) ---
 $BtnRunWinUtilFast    = $Form.FindName("BtnRunWinUtilFast")
@@ -439,7 +583,6 @@ $ActionLaunchWinUtil = {
 $BtnRunWinUtilFast.Add_Click($ActionLaunchWinUtil)
 $BtnLaunchWinUtilMain.Add_Click($ActionLaunchWinUtil)
 
-# Escolher JSON manualmente pelo Explorador do Windows
 $BtnChooseJson.Add_Click({
     $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $OpenFileDialog.Filter = "Arquivo JSON (*.json)|*.json|Todos os arquivos (*.*)|*.*"
@@ -450,7 +593,6 @@ $BtnChooseJson.Add_Click({
     }
 })
 
-# Executar com parâmetro -Config apontando para o JSON selecionado
 $BtnRunWinUtilJson.Add_Click({
     $JsonFile = $TxtJsonPath.Text
     if ([string]::IsNullOrWhiteSpace($JsonFile) -or $JsonFile -eq "Nenhum arquivo .json detectado automaticamente.") {
@@ -464,7 +606,6 @@ $BtnRunWinUtilJson.Add_Click({
     }
 
     Write-Host "Iniciando WinUtil aplicando configuração JSON: $JsonFile" -ForegroundColor Green
-    # Chamada do WinUtil com suporte a arquivo de configuração JSON remoto ou local via -Config
     Start-Process powershell -ArgumentList "-NoLogo -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command `"& { [ScriptBlock]::Create((irm https://christitus.com/win)).Invoke('-Config', '$JsonFile') }`""
 })
 
